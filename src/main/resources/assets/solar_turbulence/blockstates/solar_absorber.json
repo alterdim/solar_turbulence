@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "assembled=false": { "model": "solar_turbulence:block/solar_absorber" },
+    "assembled=true":  { "model": "solar_turbulence:block/solar_absorber" }
+  }
+}

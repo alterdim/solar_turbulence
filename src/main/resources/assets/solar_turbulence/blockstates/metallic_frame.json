@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "assembled=false": { "model": "solar_turbulence:block/metallic_frame" },
+    "assembled=true":  { "model": "solar_turbulence:block/metallic_frame" }
+  }
+}

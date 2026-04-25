@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "PowerShell(Add-Type -AssemblyName System.Drawing; $img = [System.Drawing.Image]::FromFile\\(\"C:\\\\Users\\\\louis\\\\Desktop\\\\solar_turbulence\\\\src\\\\main\\\\resources\\\\assets\\\\solar_turbulence\\\\textures\\\\block\\\\solar_absorber.png\"\\); \"Width: $\\($img.Width\\), Height: $\\($img.Height\\)\"; $img.Dispose\\(\\))"
-    ]
-  }
-}

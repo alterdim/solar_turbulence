@@ -1,8 +1,13 @@
 package li.gerard.solarturbulence;
 
 import li.gerard.solarturbulence.block.ModBlockEntities;
+import li.gerard.solarturbulence.block.solarabsorber.SolarAbsorberBlockEntity;
 import li.gerard.solarturbulence.client.renderer.SolarAbsorberBlockEntityRenderer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
@@ -10,6 +15,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
@@ -35,6 +41,23 @@ public class SolarTurbulenceModClient {
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_ABSORBER_BLOCK_ENTITY.get(), SolarAbsorberBlockEntityRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void onRenderHud(RenderGuiEvent.Post event) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.screen != null) return;
+        if (!(mc.hitResult instanceof BlockHitResult blockHit)) return;
+        Level level = mc.level;
+        if (level == null) return;
+        BlockPos pos = blockHit.getBlockPos();
+        if (!(level.getBlockEntity(pos) instanceof SolarAbsorberBlockEntity be)) return;
+
+        String text = be.getEnergy() + " / " + be.getMaxEnergy() + " FE";
+        GuiGraphics graphics = event.getGuiGraphics();
+        int centerX = mc.getWindow().getGuiScaledWidth() / 2;
+        int centerY = mc.getWindow().getGuiScaledHeight() / 2;
+        graphics.drawString(mc.font, text, centerX + 10, centerY - 4, 0xFFFFFF, true);
     }
 }
 

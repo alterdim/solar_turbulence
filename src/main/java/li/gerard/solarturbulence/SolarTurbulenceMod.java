@@ -3,6 +3,7 @@ package li.gerard.solarturbulence;
 import li.gerard.solarturbulence.block.ModBlockEntities;
 import li.gerard.solarturbulence.block.ModBlocks;
 import li.gerard.solarturbulence.item.ModItems;
+import li.gerard.solarturbulence.registry.ModCapabilities;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -62,6 +63,7 @@ public class SolarTurbulenceMod {
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         // Register the Deferred Register to the mod event bus so tabs get registered
         CREATIVE_MODE_TABS.register(modEventBus);
+        modEventBus.register(ModCapabilities.class);
 
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (ExampleMod) to respond directly to events.

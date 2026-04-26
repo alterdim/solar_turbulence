@@ -3,13 +3,13 @@ package li.gerard.solarturbulence.block.solarabsorber;
 import li.gerard.solarturbulence.block.ModBlockEntities;
 import li.gerard.solarturbulence.block.ModBlocks;
 import li.gerard.solarturbulence.block.generic.MetallicFrameBlock;
+import li.gerard.solarturbulence.block.generic.MultiblockControllerBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.EnergyStorage;
@@ -23,12 +23,11 @@ import java.util.List;
 
 import static li.gerard.solarturbulence.block.solarabsorber.SolarAbsorberBlock.ASSEMBLED;
 
-public class SolarAbsorberBlockEntity extends BlockEntity implements GeoBlockEntity {
+public class SolarAbsorberBlockEntity extends MultiblockControllerBlockEntity implements GeoBlockEntity {
 
     AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
 
     public final EnergyStorage energyStorage = new EnergyStorage(100000, 1000, 1000, 1000);
-    private int syncTicker = 0;
 
     private static final List<BlockPos> FILLER_OFFSETS = List.of(
             new BlockPos(1, 1, 0),
@@ -38,37 +37,41 @@ public class SolarAbsorberBlockEntity extends BlockEntity implements GeoBlockEnt
             new BlockPos(0, 1, 0)
     );
 
+    public SolarAbsorberBlockEntity(BlockPos pos, BlockState blockState) {
+        super(ModBlockEntities.SOLAR_ABSORBER_BLOCK_ENTITY.get(), pos, blockState);
+    }
+
     public static void tick(Level level, BlockPos pos, BlockState state, SolarAbsorberBlockEntity be) {
-        if (level.isClientSide) return;
+        MultiblockControllerBlockEntity.tick(level, pos, state, be);
+    }
+
+    @Override
+    protected void onTick(Level level, BlockPos pos, BlockState state) {
         if (!state.getValue(ASSEMBLED)) return;
 
         if (level.isDay()) {
-            be.energyStorage.receiveEnergy(100, false);
-            be.setChanged();
+            energyStorage.receiveEnergy(100, false);
+            setChanged();
         }
 
         for (Direction direction : Direction.values()) {
-            if (be.energyStorage.getEnergyStored() == 0) break;
+            if (energyStorage.getEnergyStored() == 0) break;
             IEnergyStorage neighbor = level.getCapability(
                     Capabilities.EnergyStorage.BLOCK, pos.relative(direction), direction.getOpposite());
             if (neighbor == null || !neighbor.canReceive()) continue;
-            int toSend = be.energyStorage.extractEnergy(1000, true);
+            int toSend = energyStorage.extractEnergy(1000, true);
             int accepted = neighbor.receiveEnergy(toSend, true);
             if (accepted > 0) {
-                be.energyStorage.extractEnergy(accepted, false);
+                energyStorage.extractEnergy(accepted, false);
                 neighbor.receiveEnergy(accepted, false);
-                be.setChanged();
+                setChanged();
             }
-        }
-
-        if (++be.syncTicker >= 20) {
-            be.syncTicker = 0;
-            level.sendBlockUpdated(pos, state, state, 3);
         }
     }
 
-    public SolarAbsorberBlockEntity(BlockPos pos, BlockState blockState) {
-        super(ModBlockEntities.SOLAR_ABSORBER_BLOCK_ENTITY.get(), pos, blockState);
+    @Override
+    public List<Component> getHudLines() {
+        return List.of(Component.literal(getEnergy() + " / " + getMaxEnergy() + " FE"));
     }
 
     @Override
@@ -88,8 +91,6 @@ public class SolarAbsorberBlockEntity extends BlockEntity implements GeoBlockEnt
     public void tryAssemble() {
         if (isStructureValid()) {
             assemble();
-        } else {
-            // optionally send feedback to player
         }
     }
 
@@ -98,7 +99,6 @@ public class SolarAbsorberBlockEntity extends BlockEntity implements GeoBlockEnt
             BlockPos target = worldPosition.offset(offset);
             BlockState state = level.getBlockState(target);
 
-            // Check it's the right block AND not already part of another multiblock
             if (!state.is(ModBlocks.METALLIC_FRAME_BLOCK.get()) || state.getValue(MetallicFrameBlock.ASSEMBLED)) {
                 return false;
             }
@@ -130,18 +130,6 @@ public class SolarAbsorberBlockEntity extends BlockEntity implements GeoBlockEnt
     }
 
     @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        CompoundTag tag = new CompoundTag();
-        tag.put("energy", energyStorage.serializeNBT(registries));
-        return tag;
-    }
-
-    @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.put("energy", energyStorage.serializeNBT(registries));
@@ -157,5 +145,4 @@ public class SolarAbsorberBlockEntity extends BlockEntity implements GeoBlockEnt
 
     public int getEnergy() { return energyStorage.getEnergyStored(); }
     public int getMaxEnergy() { return energyStorage.getMaxEnergyStored(); }
-
 }

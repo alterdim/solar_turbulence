@@ -1,11 +1,13 @@
 package li.gerard.solarturbulence;
 
 import li.gerard.solarturbulence.block.ModBlockEntities;
-import li.gerard.solarturbulence.block.solarabsorber.SolarAbsorberBlockEntity;
+import li.gerard.solarturbulence.block.generic.MultiblockControllerBlockEntity;
+import li.gerard.solarturbulence.client.renderer.MirrorFrameBlockEntityRenderer;
 import li.gerard.solarturbulence.client.renderer.SolarAbsorberBlockEntityRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.api.distmarker.Dist;
@@ -41,6 +43,7 @@ public class SolarTurbulenceModClient {
     @SubscribeEvent
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_ABSORBER_BLOCK_ENTITY.get(), SolarAbsorberBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.MIRROR_FRAME_BLOCK_ENTITY.get(), MirrorFrameBlockEntityRenderer::new);
     }
 
     @SubscribeEvent
@@ -51,13 +54,15 @@ public class SolarTurbulenceModClient {
         Level level = mc.level;
         if (level == null) return;
         BlockPos pos = blockHit.getBlockPos();
-        if (!(level.getBlockEntity(pos) instanceof SolarAbsorberBlockEntity be)) return;
+        if (!(level.getBlockEntity(pos) instanceof MultiblockControllerBlockEntity controller)) return;
 
-        String text = be.getEnergy() + " / " + be.getMaxEnergy() + " FE";
         GuiGraphics graphics = event.getGuiGraphics();
         int centerX = mc.getWindow().getGuiScaledWidth() / 2;
-        int centerY = mc.getWindow().getGuiScaledHeight() / 2;
-        graphics.drawString(mc.font, text, centerX + 10, centerY - 4, 0xFFFFFF, true);
+        int y = mc.getWindow().getGuiScaledHeight() / 2 - 4;
+        for (Component line : controller.getHudLines()) {
+            graphics.drawString(mc.font, line, centerX + 10, y, 0xFFFFFF, true);
+            y += mc.font.lineHeight + 2;
+        }
     }
 }
 

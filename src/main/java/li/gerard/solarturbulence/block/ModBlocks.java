@@ -3,6 +3,7 @@ package li.gerard.solarturbulence.block;
 import li.gerard.solarturbulence.SolarTurbulenceMod;
 import li.gerard.solarturbulence.block.generic.MetallicFrameBlock;
 import li.gerard.solarturbulence.block.solarabsorber.SolarAbsorberBlock;
+import li.gerard.solarturbulence.block.solarmirror.MirrorFrameBlock;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -27,4 +28,8 @@ public class ModBlocks {
     public static final DeferredHolder<Block, Block> METALLIC_FRAME_BLOCK = BLOCKS.register(
             "metallic_frame", // Our registry name.
             () -> new MetallicFrameBlock(BlockBehaviour.Properties.of()));
+
+    public static final DeferredHolder<Block, Block> MIRROR_FRAME_BLOCK = BLOCKS.register(
+            "mirror_frame", // Our registry name.
+            () -> new MirrorFrameBlock(BlockBehaviour.Properties.of().noOcclusion()));
 }

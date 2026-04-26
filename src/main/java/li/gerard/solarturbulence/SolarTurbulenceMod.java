@@ -48,6 +48,8 @@ public class SolarTurbulenceMod {
                 output.accept(EXAMPLE_BLOCK_ITEM.get());
                 output.accept(SOLAR_ABSORBER_BI.get());
                 output.accept(METALLIC_FRAME.get());
+                output.accept(MIRROR_FRAME.get());
+                output.accept(COPPER_MIRROR.get());
             }).build());
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.

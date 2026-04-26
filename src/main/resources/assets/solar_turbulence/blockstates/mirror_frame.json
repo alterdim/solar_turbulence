@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "assembled=false": { "model": "solar_turbulence:block/mirror_frame" },
+    "assembled=true":  { "model": "solar_turbulence:block/mirror_frame" }
+  }
+}

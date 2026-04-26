@@ -2,6 +2,7 @@ package li.gerard.solarturbulence;
 
 import li.gerard.solarturbulence.block.ModBlockEntities;
 import li.gerard.solarturbulence.block.ModBlocks;
+import li.gerard.solarturbulence.data.ModDataComponents;
 import li.gerard.solarturbulence.item.ModItems;
 import li.gerard.solarturbulence.registry.ModCapabilities;
 import org.slf4j.Logger;
@@ -50,6 +51,8 @@ public class SolarTurbulenceMod {
                 output.accept(METALLIC_FRAME.get());
                 output.accept(MIRROR_FRAME.get());
                 output.accept(COPPER_MIRROR.get());
+                output.accept(MIRROR_LINKER.get());
+                output.accept(SOLAR_RECEIVER.get());
             }).build());
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.
@@ -58,12 +61,10 @@ public class SolarTurbulenceMod {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
-        // Register the Deferred Register to the mod event bus so blocks get registered
+        ModDataComponents.COMPONENTS.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
-        // Register the Deferred Register to the mod event bus so items get registered
         ModItems.ITEMS.register(modEventBus);
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
-        // Register the Deferred Register to the mod event bus so tabs get registered
         CREATIVE_MODE_TABS.register(modEventBus);
         modEventBus.register(ModCapabilities.class);
 

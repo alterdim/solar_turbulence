@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -19,10 +20,14 @@ import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
 import software.bernie.geckolib.animation.AnimatableManager;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import javax.annotation.Nullable;
+
 public class MirrorFrameBlockEntity extends BlockEntity implements GeoBlockEntity {
 
     AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
     private final NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
+
+    @Nullable private BlockPos linkedAbsorber;
 
 
     public MirrorFrameBlockEntity(BlockPos pos, BlockState blockState) {
@@ -83,6 +88,9 @@ public class MirrorFrameBlockEntity extends BlockEntity implements GeoBlockEntit
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         ContainerHelper.saveAllItems(tag, items, registries);
+        if (linkedAbsorber != null) {
+            tag.put("BEAM_TARGET", NbtUtils.writeBlockPos(linkedAbsorber));
+        }
     }
 
     @Override
@@ -90,6 +98,11 @@ public class MirrorFrameBlockEntity extends BlockEntity implements GeoBlockEntit
         super.loadAdditional(tag, registries);
         items.clear();
         ContainerHelper.loadAllItems(tag, items, registries);
+        if (tag.contains("BEAM_TARGET")) {
+            linkedAbsorber = NbtUtils.readBlockPos(tag, "BEAM_TARGET").orElse(null);
+        } else {
+            linkedAbsorber = null;
+        }
     }
 
     // --- client sync ---
@@ -98,6 +111,9 @@ public class MirrorFrameBlockEntity extends BlockEntity implements GeoBlockEntit
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         CompoundTag tag = super.getUpdateTag(registries);
         ContainerHelper.saveAllItems(tag, items, registries);
+        if (linkedAbsorber != null) {
+            tag.put("BEAM_TARGET", NbtUtils.writeBlockPos(linkedAbsorber));
+        }
         return tag;
     }
 
@@ -106,6 +122,9 @@ public class MirrorFrameBlockEntity extends BlockEntity implements GeoBlockEntit
         super.handleUpdateTag(tag, registries);
         items.clear();
         ContainerHelper.loadAllItems(tag, items, registries);
+        linkedAbsorber = tag.contains("BEAM_TARGET")
+                ? NbtUtils.readBlockPos(tag, "BEAM_TARGET").orElse(null)
+                : null;
     }
 
 
@@ -126,10 +145,15 @@ public class MirrorFrameBlockEntity extends BlockEntity implements GeoBlockEntit
 
 
     public BlockPos getBeamTarget() {
-        return getBlockPos().above(10);
+        return linkedAbsorber;
+    }
+
+    public void setLinkedAbsorber(@Nullable BlockPos target) {
+        this.linkedAbsorber = target;
+        setChangedAndSync();
     }
 
     public boolean shouldRenderBeam() {
-        return hasMirror();
+        return hasMirror() && linkedAbsorber != null;
     }
 }

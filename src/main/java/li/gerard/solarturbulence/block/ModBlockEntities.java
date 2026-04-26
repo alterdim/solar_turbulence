@@ -3,6 +3,7 @@ package li.gerard.solarturbulence.block;
 import li.gerard.solarturbulence.SolarTurbulenceMod;
 import li.gerard.solarturbulence.block.solarabsorber.SolarAbsorberBlockEntity;
 import li.gerard.solarturbulence.block.solarmirror.MirrorFrameBlockEntity;
+import li.gerard.solarturbulence.block.solarreceiver.SolarReceiverBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -33,4 +34,14 @@ public class ModBlockEntities {
                     )
                     .build(null)
     );
+
+    public static final Supplier<BlockEntityType<SolarReceiverBlockEntity>> SOLAR_RECEIVER_BLOCK_ENTITY = BLOCK_ENTITIES.register(
+            "solar_receiver_block_entity",
+            () -> BlockEntityType.Builder.of(
+                            SolarReceiverBlockEntity::new,
+                            ModBlocks.SOLAR_RECEIVER_BLOCK.get()
+                    )
+                    .build(null)
+    );
+
 }

@@ -4,6 +4,7 @@ import li.gerard.solarturbulence.block.ModBlockEntities;
 import li.gerard.solarturbulence.block.generic.MultiblockControllerBlockEntity;
 import li.gerard.solarturbulence.client.renderer.MirrorFrameBlockEntityRenderer;
 import li.gerard.solarturbulence.client.renderer.SolarAbsorberBlockEntityRenderer;
+import li.gerard.solarturbulence.client.renderer.SolarReceiverBlockEntityRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
@@ -44,6 +45,7 @@ public class SolarTurbulenceModClient {
     public static void registerRenderers(final EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_ABSORBER_BLOCK_ENTITY.get(), SolarAbsorberBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.MIRROR_FRAME_BLOCK_ENTITY.get(), MirrorFrameBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_RECEIVER_BLOCK_ENTITY.get(), SolarReceiverBlockEntityRenderer::new);
     }
 
     @SubscribeEvent

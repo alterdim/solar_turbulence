@@ -37,8 +37,26 @@ public class SolarAbsorberBlockEntity extends MultiblockControllerBlockEntity im
             new BlockPos(0, 1, 0)
     );
 
+    private static final List<BlockPos> PANELS = List.of(
+            new BlockPos(1, 1, 0),
+            new BlockPos(-1, 1, 0),
+            new BlockPos(0, 1, 1),
+            new BlockPos(0, 1, -1)
+    );
+
     public SolarAbsorberBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.SOLAR_ABSORBER_BLOCK_ENTITY.get(), pos, blockState);
+    }
+
+    public BlockPos getPanel(Direction mirrorDirection) {
+        return switch (mirrorDirection) {
+            case EAST -> getBlockPos().above().west();
+            case WEST -> getBlockPos().above().east();
+            case NORTH -> getBlockPos().above().south();
+            case SOUTH -> getBlockPos().above().north();
+            default -> getBlockPos();
+        };
+
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, SolarAbsorberBlockEntity be) {

@@ -9,7 +9,7 @@ import software.bernie.geckolib.model.GeoModel;
 public class MirrorFrameModel extends GeoModel<MirrorFrameBlockEntity> {
 
     private final ResourceLocation model = ResourceLocation.fromNamespaceAndPath(SolarTurbulenceMod.MODID, "geo/mirror_frame.geo.json");
-    private final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(SolarTurbulenceMod.MODID, "textures/block/mirror_frame_empty.png");
+    private final ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(SolarTurbulenceMod.MODID, "textures/block/mirror_frame.png");
     private final ResourceLocation animations = ResourceLocation.fromNamespaceAndPath(SolarTurbulenceMod.MODID, "animations/example.animation.json");
 
     @Override

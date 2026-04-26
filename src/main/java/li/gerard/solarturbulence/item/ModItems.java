@@ -19,6 +19,9 @@ public class ModItems {
     public static final DeferredItem<BlockItem> SOLAR_ABSORBER_BI = ITEMS.registerSimpleBlockItem("solar_absorber", ModBlocks.SOLAR_ABSORBER_BLOCK);
     public static final DeferredItem<BlockItem> METALLIC_FRAME = ITEMS.registerSimpleBlockItem("metallic_frame", ModBlocks.METALLIC_FRAME_BLOCK);
     public static final DeferredItem<BlockItem> MIRROR_FRAME = ITEMS.registerSimpleBlockItem("mirror_frame", ModBlocks.MIRROR_FRAME_BLOCK);
+    public static final DeferredItem<BlockItem> SOLAR_RECEIVER = ITEMS.registerSimpleBlockItem("solar_receiver", ModBlocks.SOLAR_RECEIVER_BLOCK);
+    public static final DeferredItem<Item> MIRROR_LINKER = ITEMS.register("mirror_linker.json",
+            () -> new MirrorLinkerItem(new Item.Properties()));
 
     public static final DeferredItem<MirrorItem> COPPER_MIRROR = ITEMS.register("copper_mirror",
             () -> new MirrorItem(new Item.Properties().stacksTo(1),

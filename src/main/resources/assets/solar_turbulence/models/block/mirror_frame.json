@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube",
   "textures": {
-    "all": "solar_turbulence:block/solar_absorber"
+    "all": "solar_turbulence:block/mirror_frame"
   }
 }

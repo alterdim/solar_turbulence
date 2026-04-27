@@ -1,10 +1,13 @@
 package li.gerard.solarturbulence;
 
+import com.lowdragmc.lowdraglib2.LDLib2;
+import com.lowdragmc.lowdraglib2.gui.factory.PlayerUIMenuType;
 import li.gerard.solarturbulence.block.ModBlockEntities;
 import li.gerard.solarturbulence.block.ModBlocks;
 import li.gerard.solarturbulence.data.ModDataComponents;
 import li.gerard.solarturbulence.item.ModItems;
 import li.gerard.solarturbulence.capability.ModCapabilities;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -34,6 +37,7 @@ import static li.gerard.solarturbulence.item.ModItems.*;
 public class SolarTurbulenceMod {
     // Define mod id in a common place for everything to reference
     public static final String MODID = "solar_turbulence";
+    public static final ResourceLocation UI_ID = LDLib2.id("solar_turbulence");
     // Directly reference a slf4j logger
     public static final Logger LOGGER = LogUtils.getLogger();
 
@@ -55,6 +59,7 @@ public class SolarTurbulenceMod {
                 output.accept(SOLAR_RECEIVER.get());
             }).build());
 
+
     // The constructor for the mod class is the first code that is run when your mod is loaded.
     // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
     public SolarTurbulenceMod(IEventBus modEventBus, ModContainer modContainer) {
@@ -67,6 +72,9 @@ public class SolarTurbulenceMod {
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
         modEventBus.register(ModCapabilities.class);
+
+
+
 
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (ExampleMod) to respond directly to events.

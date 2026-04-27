@@ -2,6 +2,8 @@ package li.gerard.solarturbulence.block.solarreceiver;
 
 import com.lowdragmc.lowdraglib2.gui.factory.BlockUIMenuType;
 import com.lowdragmc.lowdraglib2.gui.sync.bindings.impl.DataBindingBuilder;
+import com.lowdragmc.lowdraglib2.gui.sync.bindings.impl.SupplierDataSource;
+import com.lowdragmc.lowdraglib2.gui.texture.ColorBorderTexture;
 import com.lowdragmc.lowdraglib2.gui.ui.ModularUI;
 import com.lowdragmc.lowdraglib2.gui.ui.UI;
 import com.lowdragmc.lowdraglib2.gui.ui.UIElement;
@@ -11,9 +13,12 @@ import com.lowdragmc.lowdraglib2.gui.ui.elements.ProgressBar;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.inventory.InventorySlots;
 import com.lowdragmc.lowdraglib2.gui.ui.style.StylesheetManager;
 import li.gerard.solarturbulence.capability.heat.HeatStorage;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -25,6 +30,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.appliedenergistics.yoga.YogaFlexDirection;
 import org.jetbrains.annotations.Nullable;
 
 public class SolarReceiverBlock extends Block implements EntityBlock, BlockUIMenuType.BlockUI {
@@ -78,24 +84,24 @@ public class SolarReceiverBlock extends Block implements EntityBlock, BlockUIMen
                 .interpolateStep(-1f) // partial-tick lerp = buttery smooth
         );
         // Tint the fill red-orange so it reads as "heat"
-        heatBar.bar(b -> b.style(s -> s.backgroundColor(0xFFE94E1B)));
-        heatBar.barContainer(c -> c.style(s -> s.backgroundColor(0xFF1A1A1A)));
+        heatBar.bar(c -> c.style(s -> s.background(new ColorBorderTexture(0xFFFF00, 0xFF0000))));
+        heatBar.barContainer(c -> c.style(s -> s.background(new ColorBorderTexture(0xFF0000, 0xFF0000))));
 
         // Server → client live binding for the fill ratio
-        heatBar.bindDataSource(DataBindingBuilder.floatValS2C(
+        heatBar.bindDataSource(SupplierDataSource.of(
                 () -> maxHeat <= 0 ? 0f : (heat.getHeatStored() / (float) maxHeat)
-        ).build());
+        ));
 
         // ── Live numeric readout under the bar ──────────────────────────────
         Label readout = new Label();
         readout.layout(l -> l.marginTop(4));
-        readout.bindDataSource(DataBindingBuilder.componentS2C(() -> {
-            int current = heat.getHeat();
+        readout.bindDataSource(SupplierDataSource.of(() -> {
+            int current = heat.getHeatStored();
             // Format as "X / Y kJ" with thousands separator
             return Component.literal(
                     String.format("%,d / %,d kJ", current / 1000, maxHeat / 1000)
             ).withStyle(ChatFormatting.GOLD);
-        }).build());
+        }));
 
         // ── Title ───────────────────────────────────────────────────────────
         Label title = new Label();
@@ -104,20 +110,11 @@ public class SolarReceiverBlock extends Block implements EntityBlock, BlockUIMen
         title.layout(l -> l.marginBottom(6));
 
         // ── Vertical column holding everything ──────────────────────────────
-        UIElement column = new UIElement()
-                .layout(l -> l.flexDirection(FlexDirection.COLUMN)
-                        .alignItems(Align.CENTER)
-                        .justifyContent(Justify.CENTER)
-                        .gap(2)
-                        .paddingAll(8))
-                .addChildren(title, heatBar, readout);
+        UIElement column = new UIElement().addChildren(title, heatBar, readout);
 
         // ── Root with the standard panel chrome ─────────────────────────────
         UIElement root = new UIElement()
                 .addClass("panel_bg")
-                .layout(l -> l.width(176).height(120)
-                        .alignItems(Align.CENTER)
-                        .justifyContent(Justify.CENTER))
                 .addChild(column);
 
         return ModularUI.of(

@@ -4,7 +4,7 @@ import li.gerard.solarturbulence.block.ModBlockEntities;
 import li.gerard.solarturbulence.block.ModBlocks;
 import li.gerard.solarturbulence.data.ModDataComponents;
 import li.gerard.solarturbulence.item.ModItems;
-import li.gerard.solarturbulence.registry.ModCapabilities;
+import li.gerard.solarturbulence.capability.ModCapabilities;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;

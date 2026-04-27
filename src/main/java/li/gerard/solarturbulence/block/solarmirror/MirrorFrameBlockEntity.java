@@ -1,17 +1,13 @@
 package li.gerard.solarturbulence.block.solarmirror;
 
+import com.lowdragmc.lowdraglib2.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib2.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib2.syncdata.holder.blockentity.ISyncPersistRPCBlockEntity;
+import com.lowdragmc.lowdraglib2.syncdata.storage.FieldManagedStorage;
+import com.lowdragmc.lowdraglib2.syncdata.storage.IManagedStorage;
 import li.gerard.solarturbulence.block.ModBlockEntities;
 import li.gerard.solarturbulence.item.mirror.MirrorItem;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -22,11 +18,16 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 
-public class MirrorFrameBlockEntity extends BlockEntity implements GeoBlockEntity {
+public class MirrorFrameBlockEntity extends BlockEntity implements GeoBlockEntity, ISyncPersistRPCBlockEntity {
 
     AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
-    private final NonNullList<ItemStack> items = NonNullList.withSize(1, ItemStack.EMPTY);
 
+    private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+
+    @Persisted @DescSynced
+    private ItemStack mirrorStack = ItemStack.EMPTY;
+
+    @Persisted @DescSynced
     @Nullable private BlockPos linkedAbsorber;
 
 
@@ -45,11 +46,11 @@ public class MirrorFrameBlockEntity extends BlockEntity implements GeoBlockEntit
     }
 
     public ItemStack getMirrorStack() {
-        return items.get(0);
+        return mirrorStack;
     }
 
     public boolean hasMirror() {
-        return !items.get(0).isEmpty();
+        return !mirrorStack.isEmpty();
     }
 
     /** Try to insert the player's held stack. Returns the leftover stack. */
@@ -57,92 +58,19 @@ public class MirrorFrameBlockEntity extends BlockEntity implements GeoBlockEntit
         if (hasMirror() || incoming.isEmpty() || !(incoming.getItem() instanceof MirrorItem)) {
             return incoming;
         }
-        ItemStack toStore = incoming.copyWithCount(1);
-        items.set(0, toStore);
+        mirrorStack = incoming.copyWithCount(1);
         ItemStack remainder = incoming.copy();
         remainder.shrink(1);
-        setChangedAndSync();
         return remainder;
     }
 
     /** Removes and returns the inserted mirror, or EMPTY if none. */
     public ItemStack tryExtract() {
         if (!hasMirror()) return ItemStack.EMPTY;
-        ItemStack out = items.get(0);
-        items.set(0, ItemStack.EMPTY);
-        setChangedAndSync();
+        ItemStack out = mirrorStack;
+        mirrorStack = ItemStack.EMPTY;
         return out;
     }
-
-    private void setChangedAndSync() {
-        setChanged();
-        if (level != null && !level.isClientSide) {
-            level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), 3);
-        }
-    }
-
-    // --- save / load ---
-
-
-    @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.saveAdditional(tag, registries);
-        ContainerHelper.saveAllItems(tag, items, registries);
-        if (linkedAbsorber != null) {
-            tag.put("BEAM_TARGET", NbtUtils.writeBlockPos(linkedAbsorber));
-        }
-    }
-
-    @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        items.clear();
-        ContainerHelper.loadAllItems(tag, items, registries);
-        if (tag.contains("BEAM_TARGET")) {
-            linkedAbsorber = NbtUtils.readBlockPos(tag, "BEAM_TARGET").orElse(null);
-        } else {
-            linkedAbsorber = null;
-        }
-    }
-
-    // --- client sync ---
-
-    @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        CompoundTag tag = super.getUpdateTag(registries);
-        ContainerHelper.saveAllItems(tag, items, registries);
-        if (linkedAbsorber != null) {
-            tag.put("BEAM_TARGET", NbtUtils.writeBlockPos(linkedAbsorber));
-        }
-        return tag;
-    }
-
-    @Override
-    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
-        super.handleUpdateTag(tag, registries);
-        items.clear();
-        ContainerHelper.loadAllItems(tag, items, registries);
-        linkedAbsorber = tag.contains("BEAM_TARGET")
-                ? NbtUtils.readBlockPos(tag, "BEAM_TARGET").orElse(null)
-                : null;
-    }
-
-
-
-    @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    @Override
-    public void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket packet,
-                             HolderLookup.Provider registries) {
-        if (packet.getTag() != null) {
-            handleUpdateTag(packet.getTag(), registries);
-        }
-    }
-
-
 
     public BlockPos getBeamTarget() {
         return linkedAbsorber;
@@ -150,10 +78,14 @@ public class MirrorFrameBlockEntity extends BlockEntity implements GeoBlockEntit
 
     public void setLinkedAbsorber(@Nullable BlockPos target) {
         this.linkedAbsorber = target;
-        setChangedAndSync();
     }
 
     public boolean shouldRenderBeam() {
         return hasMirror() && linkedAbsorber != null;
+    }
+
+    @Override
+    public IManagedStorage getSyncStorage() {
+        return syncStorage;
     }
 }

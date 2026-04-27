@@ -2,8 +2,8 @@ package li.gerard.solarturbulence.block.solarabsorber;
 
 import li.gerard.solarturbulence.block.ModBlockEntities;
 import li.gerard.solarturbulence.block.ModBlocks;
-import li.gerard.solarturbulence.block.generic.MetallicFrameBlock;
-import li.gerard.solarturbulence.block.generic.MultiblockControllerBlockEntity;
+import li.gerard.solarturbulence.generic.MetallicFrameBlock;
+import li.gerard.solarturbulence.generic.MultiblockControllerBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;

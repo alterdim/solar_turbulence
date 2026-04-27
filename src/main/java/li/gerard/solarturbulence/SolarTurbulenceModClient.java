@@ -1,7 +1,7 @@
 package li.gerard.solarturbulence;
 
 import li.gerard.solarturbulence.block.ModBlockEntities;
-import li.gerard.solarturbulence.block.generic.MultiblockControllerBlockEntity;
+import li.gerard.solarturbulence.generic.MultiblockControllerBlockEntity;
 import li.gerard.solarturbulence.client.renderer.MirrorFrameBlockEntityRenderer;
 import li.gerard.solarturbulence.client.renderer.SolarAbsorberBlockEntityRenderer;
 import li.gerard.solarturbulence.client.renderer.SolarReceiverBlockEntityRenderer;

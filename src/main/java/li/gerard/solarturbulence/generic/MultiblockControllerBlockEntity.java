@@ -1,4 +1,4 @@
-package li.gerard.solarturbulence.block.generic;
+package li.gerard.solarturbulence.generic;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;

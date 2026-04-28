@@ -1,53 +1,40 @@
 package li.gerard.solarturbulence.block.solarreceiver;
 
-import com.lowdragmc.lowdraglib2.LDLib2;
 import com.lowdragmc.lowdraglib2.gui.factory.BlockUIMenuType;
-import com.lowdragmc.lowdraglib2.gui.sync.bindings.IDataProvider;
 import com.lowdragmc.lowdraglib2.gui.sync.bindings.impl.DataBindingBuilder;
-import com.lowdragmc.lowdraglib2.gui.sync.bindings.impl.SupplierDataSource;
-import com.lowdragmc.lowdraglib2.gui.texture.ColorBorderTexture;
 import com.lowdragmc.lowdraglib2.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib2.gui.texture.SpriteTexture;
 import com.lowdragmc.lowdraglib2.gui.ui.ModularUI;
 import com.lowdragmc.lowdraglib2.gui.ui.UI;
 import com.lowdragmc.lowdraglib2.gui.ui.UIElement;
-import com.lowdragmc.lowdraglib2.gui.ui.data.FillDirection;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.FluidSlot;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.Label;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.ProgressBar;
-import com.lowdragmc.lowdraglib2.gui.ui.elements.inventory.InventorySlots;
-import com.lowdragmc.lowdraglib2.gui.ui.event.UIEvents;
-import com.lowdragmc.lowdraglib2.gui.ui.style.StylesheetManager;
-import com.lowdragmc.lowdraglib2.gui.ui.style.values.FloatValue;
 import com.lowdragmc.lowdraglib2.utils.XmlUtils;
 import li.gerard.solarturbulence.SolarTurbulenceMod;
 import li.gerard.solarturbulence.capability.fluid.MonoFluidTank;
 import li.gerard.solarturbulence.capability.heat.HeatStorage;
-import net.minecraft.ChatFormatting;
+import li.gerard.solarturbulence.generic.RayEmittingBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import org.appliedenergistics.yoga.YogaFlexDirection;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.logging.Logger;
 
-public class SolarReceiverBlock extends Block implements EntityBlock, BlockUIMenuType.BlockUI {
+public class SolarReceiverBlock extends RayEmittingBlock implements BlockUIMenuType.BlockUI {
 
     public static IGuiTexture MAGMA_BAR = SpriteTexture.of(ResourceLocation.fromNamespaceAndPath("minecraft", "textures/block/magma.png"));
 
@@ -77,7 +64,7 @@ public class SolarReceiverBlock extends Block implements EntityBlock, BlockUIMen
         if (!level.isClientSide) {
             BlockUIMenuType.openUI((ServerPlayer) player, pos);
             if (level.getBlockEntity(pos) instanceof  SolarReceiverBlockEntity be) {
-                be.getHeatStorage().receiveHeat(1000, false);
+                be.getHeatStorage().receiveHeat(10000, false);
                 Logger.getAnonymousLogger().log(java.util.logging.Level.INFO, "ADDED HEAT, SERVER total is " + be.getHeatStorage().getHeatStored());
             }
         }

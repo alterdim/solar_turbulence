@@ -58,6 +58,7 @@ public class SolarTurbulenceMod {
                 output.accept(MIRROR_LINKER.get());
                 output.accept(SOLAR_RECEIVER.get());
                 output.accept(HEAT_BEAM_EMITTER.get());
+                output.accept(WAND.get());
             }).build());
 
 

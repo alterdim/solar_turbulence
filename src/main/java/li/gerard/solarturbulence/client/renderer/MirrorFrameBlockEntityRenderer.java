@@ -56,7 +56,7 @@ public class MirrorFrameBlockEntityRenderer extends GeoBlockRenderer<MirrorFrame
                             PoseStack poseStack, float partialTick) {
         poseStack.pushPose();
 
-        // PoseStack is currently at the block's corner — move to source block center
+
         poseStack.translate(0.5, 0.5, 0.5);
 
         BlockPos source = frame.getBlockPos();
@@ -76,14 +76,14 @@ public class MirrorFrameBlockEntityRenderer extends GeoBlockRenderer<MirrorFrame
         float pulse = (float) (Math.sin((gameTime + partialTick) * PULSE_SPEED * Math.PI) * 0.5 + 0.5);
         float pulseAlpha = PULSE_MIN_ALPHA + (PULSE_MAX_ALPHA - PULSE_MIN_ALPHA) * pulse;
 
-        // Orthonormal basis aligned to dir
+        // coord stuff
         Vector3f up = Math.abs(dir.y) > 0.99f ? new Vector3f(1, 0, 0) : new Vector3f(0, 1, 0);
         Vector3f right = new Vector3f(dir).cross(up).normalize();
         Vector3f localUp = new Vector3f(right).cross(dir).normalize();
 
         int[] colors = mirror.getBeamColors();
 
-        // GL state for additive glow
+        // glow
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA,
                 com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE);
@@ -95,13 +95,13 @@ public class MirrorFrameBlockEntityRenderer extends GeoBlockRenderer<MirrorFrame
         Tesselator tess = Tesselator.getInstance();
         BufferBuilder buffer = tess.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
-        // Main pass: source → target gradient
+        // pass
         int colorSource = colors[0];
         int colorTarget = colors[colors.length - 1];
         emitCylinder(buffer, pose, dir, length, right, localUp, BEAM_RADIUS,
                 colorSource, colorTarget, pulseAlpha);
 
-        // Mid-stop pass for 3-color beams
+        // 3 colors
         if (colors.length == 3) {
             emitMidSegment(buffer, pose, dir, length, right, localUp, colors[1], pulseAlpha);
         }
@@ -111,7 +111,7 @@ public class MirrorFrameBlockEntityRenderer extends GeoBlockRenderer<MirrorFrame
             BufferUploader.drawWithShader(mesh);
         }
 
-        // Restore state
+        //
         RenderSystem.enableCull();
         RenderSystem.depthMask(true);
         RenderSystem.defaultBlendFunc();
@@ -146,7 +146,7 @@ public class MirrorFrameBlockEntityRenderer extends GeoBlockRenderer<MirrorFrame
         float segStart = length * 0.25f;
         float segEnd = length * 0.75f;
         float midRadius = BEAM_RADIUS * 1.05f;
-        int faded = midColor & 0x00FFFFFF; // alpha 0
+        int faded = midColor & 0x00FFFFFF;
 
         for (int i = 0; i < CYLINDER_SIDES; i++) {
             float a0 = (float) (i * 2 * Math.PI / CYLINDER_SIDES);

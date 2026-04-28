@@ -3,6 +3,8 @@
     "facing=north": { "model": "solar_turbulence:block/heat_beam_emitter" },
     "facing=south": { "model": "solar_turbulence:block/heat_beam_emitter", "y": 180 },
     "facing=west":  { "model": "solar_turbulence:block/heat_beam_emitter", "y": 270 },
-    "facing=east":  { "model": "solar_turbulence:block/heat_beam_emitter", "y": 90 }
+    "facing=east":  { "model": "solar_turbulence:block/heat_beam_emitter", "y": 90 },
+    "facing=up":    { "model": "solar_turbulence:block/heat_beam_emitter", "x": 270 },
+    "facing=down":  { "model": "solar_turbulence:block/heat_beam_emitter", "x": 90 }
   }
 }

@@ -4,7 +4,7 @@ import com.lowdragmc.lowdraglib2.syncdata.annotation.Persisted;
 import li.gerard.solarturbulence.block.ModBlockEntities;
 import li.gerard.solarturbulence.capability.fluid.MonoFluidTank;
 import li.gerard.solarturbulence.capability.heat.HeatStorage;
-import li.gerard.solarturbulence.generic.RayEmittingBlockEntity;
+import li.gerard.solarturbulence.block.generic.RayEmittingBlockEntity;
 import li.gerard.solarturbulence.property.FluidPropertyHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,7 +29,7 @@ public class SolarReceiverBlockEntity extends RayEmittingBlockEntity implements 
     public final MonoFluidTank tank = new MonoFluidTank(10000, 1000, 0).setValidator(this::isFluidAllowed);
 
     public SolarReceiverBlockEntity(BlockPos pos, BlockState blockState) {
-        super(ModBlockEntities.SOLAR_RECEIVER_BLOCK_ENTITY.get(), pos, blockState, 100000, 100, 10);
+        super(ModBlockEntities.SOLAR_RECEIVER_BLOCK_ENTITY.get(), pos, blockState, 100000, 10, 10);
     }
 
     @Override

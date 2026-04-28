@@ -3,7 +3,7 @@ package li.gerard.solarturbulence.client.renderer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import li.gerard.solarturbulence.generic.RayEmittingBlockEntity;
+import li.gerard.solarturbulence.block.generic.RayEmittingBlockEntity;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.Direction;
 import org.joml.Matrix4f;
@@ -136,4 +136,6 @@ public final class RayRenderer {
         int b =  argb        & 0xFF;
         buffer.addVertex(pose, v.x, v.y, v.z).setColor(r, g, b, a);
     }
+
+
 }

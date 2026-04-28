@@ -1,9 +1,7 @@
 package li.gerard.solarturbulence.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import li.gerard.solarturbulence.block.solarabsorber.SolarAbsorberBlockEntity;
 import li.gerard.solarturbulence.block.solarreceiver.SolarReceiverBlockEntity;
-import li.gerard.solarturbulence.client.model.SolarAbsorberModel;
 import li.gerard.solarturbulence.client.model.SolarReceiverModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -19,6 +17,12 @@ public class SolarReceiverBlockEntityRenderer extends GeoBlockRenderer<SolarRece
     @Override
     public void render(SolarReceiverBlockEntity animatable, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         super.render(animatable, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
+        RayRenderer.render(animatable, partialTick, poseStack);
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(SolarReceiverBlockEntity blockEntity) {
+        return RayRenderer.shouldRenderOffScreen(blockEntity);
     }
 
     @Override

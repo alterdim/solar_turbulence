@@ -1,4 +1,4 @@
-package li.gerard.solarturbulence.generic;
+package li.gerard.solarturbulence.block.generic;
 
 import com.lowdragmc.lowdraglib2.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib2.syncdata.annotation.Persisted;

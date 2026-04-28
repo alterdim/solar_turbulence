@@ -2,7 +2,7 @@ package li.gerard.solarturbulence.block;
 
 import li.gerard.solarturbulence.SolarTurbulenceMod;
 import li.gerard.solarturbulence.block.heatbeam.HeatBeamEmitterBlock;
-import li.gerard.solarturbulence.generic.MetallicFrameBlock;
+import li.gerard.solarturbulence.block.generic.MetallicFrameBlock;
 import li.gerard.solarturbulence.block.solarabsorber.SolarAbsorberBlock;
 import li.gerard.solarturbulence.block.solarmirror.MirrorFrameBlock;
 import li.gerard.solarturbulence.block.solarreceiver.SolarReceiverBlock;

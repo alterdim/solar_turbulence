@@ -1,4 +1,4 @@
-package li.gerard.solarturbulence.generic;
+package li.gerard.solarturbulence.block.generic;
 
 import li.gerard.solarturbulence.block.ModBlocks;
 import li.gerard.solarturbulence.block.solarabsorber.SolarAbsorberBlockEntity;

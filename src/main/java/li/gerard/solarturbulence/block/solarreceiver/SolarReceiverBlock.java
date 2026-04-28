@@ -14,7 +14,7 @@ import com.lowdragmc.lowdraglib2.utils.XmlUtils;
 import li.gerard.solarturbulence.SolarTurbulenceMod;
 import li.gerard.solarturbulence.capability.fluid.MonoFluidTank;
 import li.gerard.solarturbulence.capability.heat.HeatStorage;
-import li.gerard.solarturbulence.generic.RayEmittingBlock;
+import li.gerard.solarturbulence.block.generic.RayEmittingBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

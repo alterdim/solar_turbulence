@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "solar_turbulence:block/heat_beam_emitter" },
+    "facing=south": { "model": "solar_turbulence:block/heat_beam_emitter", "y": 180 },
+    "facing=west":  { "model": "solar_turbulence:block/heat_beam_emitter", "y": 270 },
+    "facing=east":  { "model": "solar_turbulence:block/heat_beam_emitter", "y": 90 }
+  }
+}

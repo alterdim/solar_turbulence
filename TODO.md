@@ -1,0 +1,1 @@
+i would like beams of light to transfer as well as mirrors to "redirect" the beam.  the beam is a fixed amount of blocks and can be increased with something similar to a repeater.

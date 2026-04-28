@@ -6,15 +6,22 @@
         .flex-1 {
         flex: 1;
         }
+
         .__progress-bar_bar__ {
             background: sprite(minecraft:textures/block/lava_still.png);
         }
+
     </style>
     <root class="panel_bg" style="width: 150; height: 100">
-        <progress-bar min-value="0" max-value="100000" value="50000" text = "Receiver Heat"/>
+
+        <progress-bar min-value="0" max-value="100" value="0" text = "Receiver Heat"/>
+
         <label>Heat Transfer Fluid Tank</label>
+
         <fluid-slot capacity="16000"/>
+
         <label>Power Control</label>
+
         <switch/>
     </root>
 

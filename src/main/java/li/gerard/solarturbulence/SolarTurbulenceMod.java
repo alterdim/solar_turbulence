@@ -57,6 +57,7 @@ public class SolarTurbulenceMod {
                 output.accept(COPPER_MIRROR.get());
                 output.accept(MIRROR_LINKER.get());
                 output.accept(SOLAR_RECEIVER.get());
+                output.accept(HEAT_BEAM_EMITTER.get());
             }).build());
 
 

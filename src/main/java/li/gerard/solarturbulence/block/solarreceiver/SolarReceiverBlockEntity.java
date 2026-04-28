@@ -18,6 +18,12 @@ import li.gerard.solarturbulence.capability.fluid.MonoFluidTank;
 import li.gerard.solarturbulence.capability.heat.HeatStorage;
 import li.gerard.solarturbulence.property.FluidPropertyHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -37,12 +43,12 @@ public class SolarReceiverBlockEntity extends BlockEntity implements GeoBlockEnt
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
 
     @Persisted @DescSynced
-    private final HeatStorage heatStorage = new HeatStorage(100000, 1000, 1000);
+    private final HeatStorage heatStorage = new HeatStorage(100000, 100000, 1000);
 
-    @Persisted @DescSynced
+    @Persisted
     private final EnergyStorage energyStorage = new EnergyStorage(100000, 1000, 1000);
 
-    @Persisted @DescSynced
+    @Persisted
     public final MonoFluidTank tank = new MonoFluidTank(10000, 1000, 0).setValidator(this::isFluidAllowed);
 
     public SolarReceiverBlockEntity(BlockPos pos, BlockState blockState) {

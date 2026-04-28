@@ -1,9 +1,13 @@
 package li.gerard.solarturbulence.capability.heat;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class HeatStorage implements IHeatStorage, INBTSerializable<Tag> {
 
@@ -28,7 +32,7 @@ public class HeatStorage implements IHeatStorage, INBTSerializable<Tag> {
         this.capacity = capacity;
         this.maxReceive = maxReceive;
         this.maxExtract = maxExtract;
-        this.heat = Math.max(0, Math.min(capacity, heat));
+        this.heat = Math.clamp(heat, 0, capacity);
     }
 
     @Override
@@ -75,13 +79,16 @@ public class HeatStorage implements IHeatStorage, INBTSerializable<Tag> {
 
     @Override
     public Tag serializeNBT(HolderLookup.Provider provider) {
-        return IntTag.valueOf(heat);
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("heat", heat);
+        return tag;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, Tag tag) {
-        if (tag instanceof IntTag intTag) {
-            this.heat = Math.max(0, Math.min(capacity, intTag.getAsInt()));
+        if (tag instanceof CompoundTag compound) {
+            this.heat = Math.clamp(compound.getInt("heat"), 0, capacity);
         }
+        else Logger.getAnonymousLogger().log(Level.WARNING, "[HeatStorage]: Invalid tag received!");
     }
 }

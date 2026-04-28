@@ -2,6 +2,7 @@ package li.gerard.solarturbulence;
 
 import li.gerard.solarturbulence.block.ModBlockEntities;
 import li.gerard.solarturbulence.generic.MultiblockControllerBlockEntity;
+import li.gerard.solarturbulence.client.renderer.HeatBeamEmitterBlockEntityRenderer;
 import li.gerard.solarturbulence.client.renderer.MirrorFrameBlockEntityRenderer;
 import li.gerard.solarturbulence.client.renderer.SolarAbsorberBlockEntityRenderer;
 import li.gerard.solarturbulence.client.renderer.SolarReceiverBlockEntityRenderer;
@@ -46,6 +47,7 @@ public class SolarTurbulenceModClient {
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_ABSORBER_BLOCK_ENTITY.get(), SolarAbsorberBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.MIRROR_FRAME_BLOCK_ENTITY.get(), MirrorFrameBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_RECEIVER_BLOCK_ENTITY.get(), SolarReceiverBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.HEAT_BEAM_EMITTER_BLOCK_ENTITY.get(), HeatBeamEmitterBlockEntityRenderer::new);
     }
 
     @SubscribeEvent

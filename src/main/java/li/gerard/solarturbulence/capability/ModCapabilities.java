@@ -36,10 +36,11 @@ public class ModCapabilities {
                 ModBlockEntities.SOLAR_RECEIVER_BLOCK_ENTITY.get(),
                 (be, side) -> be.getEnergyStorage()
         );
+
         event.registerBlockEntity(
-                Capabilities.FluidHandler.BLOCK,
-                ModBlockEntities.SOLAR_RECEIVER_BLOCK_ENTITY.get(),
-                (be, side) -> be.tank
+                ModCapabilities.HEAT,
+                ModBlockEntities.HEAT_BEAM_EMITTER_BLOCK_ENTITY.get(),
+                (be, side) -> be.getHeatStorage()
         );
     }
 }

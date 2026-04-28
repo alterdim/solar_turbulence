@@ -1,6 +1,7 @@
 package li.gerard.solarturbulence.block;
 
 import li.gerard.solarturbulence.SolarTurbulenceMod;
+import li.gerard.solarturbulence.block.heatbeam.HeatBeamEmitterBlockEntity;
 import li.gerard.solarturbulence.block.solarabsorber.SolarAbsorberBlockEntity;
 import li.gerard.solarturbulence.block.solarmirror.MirrorFrameBlockEntity;
 import li.gerard.solarturbulence.block.solarreceiver.SolarReceiverBlockEntity;
@@ -40,6 +41,15 @@ public class ModBlockEntities {
             () -> BlockEntityType.Builder.of(
                             SolarReceiverBlockEntity::new,
                             ModBlocks.SOLAR_RECEIVER_BLOCK.get()
+                    )
+                    .build(null)
+    );
+
+    public static final Supplier<BlockEntityType<HeatBeamEmitterBlockEntity>> HEAT_BEAM_EMITTER_BLOCK_ENTITY = BLOCK_ENTITIES.register(
+            "heat_beam_emitter_block_entity",
+            () -> BlockEntityType.Builder.of(
+                            HeatBeamEmitterBlockEntity::new,
+                            ModBlocks.HEAT_BEAM_EMITTER_BLOCK.get()
                     )
                     .build(null)
     );

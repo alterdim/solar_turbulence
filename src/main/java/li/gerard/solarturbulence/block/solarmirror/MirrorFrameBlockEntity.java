@@ -6,8 +6,10 @@ import com.lowdragmc.lowdraglib2.syncdata.holder.blockentity.ISyncPersistRPCBloc
 import com.lowdragmc.lowdraglib2.syncdata.storage.FieldManagedStorage;
 import com.lowdragmc.lowdraglib2.syncdata.storage.IManagedStorage;
 import li.gerard.solarturbulence.block.ModBlockEntities;
+import li.gerard.solarturbulence.block.generic.IRayReflector;
 import li.gerard.solarturbulence.item.mirror.MirrorItem;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -18,7 +20,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 
-public class MirrorFrameBlockEntity extends BlockEntity implements GeoBlockEntity, ISyncPersistRPCBlockEntity {
+public class MirrorFrameBlockEntity extends BlockEntity implements GeoBlockEntity, ISyncPersistRPCBlockEntity, IRayReflector {
 
     AnimatableInstanceCache animatableInstanceCache = GeckoLibUtil.createInstanceCache(this);
 
@@ -30,20 +32,36 @@ public class MirrorFrameBlockEntity extends BlockEntity implements GeoBlockEntit
     @Persisted @DescSynced
     @Nullable private BlockPos linkedAbsorber;
 
+    // Outgoing ray segment driven by the upstream RayEmittingBlockEntity each tick.
+    // -1 = inactive (no ray hitting this frame).
+    @DescSynced
+    private int outDirectionOrdinal = -1;
+
+    @DescSynced
+    private int outBeamLength = 0;
+
+    @DescSynced
+    private int outPointerLength = 0;
 
     public MirrorFrameBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.MIRROR_FRAME_BLOCK_ENTITY.get(), pos, blockState);
     }
 
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+    // -------------------------------------------------------------------------
+    // GeckoLib
+    // -------------------------------------------------------------------------
 
-    }
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {}
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
         return animatableInstanceCache;
     }
+
+    // -------------------------------------------------------------------------
+    // Mirror item access
+    // -------------------------------------------------------------------------
 
     public ItemStack getMirrorStack() {
         return mirrorStack;
@@ -72,6 +90,10 @@ public class MirrorFrameBlockEntity extends BlockEntity implements GeoBlockEntit
         return out;
     }
 
+    // -------------------------------------------------------------------------
+    // Legacy linker support (kept for data compatibility)
+    // -------------------------------------------------------------------------
+
     public BlockPos getBeamTarget() {
         return linkedAbsorber;
     }
@@ -80,9 +102,72 @@ public class MirrorFrameBlockEntity extends BlockEntity implements GeoBlockEntit
         this.linkedAbsorber = target;
     }
 
-    public boolean shouldRenderBeam() {
-        return hasMirror() && linkedAbsorber != null;
+    // -------------------------------------------------------------------------
+    // IRayReflector
+    // -------------------------------------------------------------------------
+
+    @Override
+    public boolean canReflect() {
+        return hasMirror();
     }
+
+    @Override
+    public Direction reflect(Direction incoming) {
+        if (!hasMirror()) return incoming;
+        Direction mirrorFacing = getBlockState().getValue(MirrorFrameBlock.FACING);
+        return ((MirrorItem) mirrorStack.getItem()).reflect(incoming, mirrorFacing);
+    }
+
+    @Override
+    public float getHeatMultiplier() {
+        if (!hasMirror()) return 1.0f;
+        return ((MirrorItem) mirrorStack.getItem()).getHeatMultiplier();
+    }
+
+    @Override
+    public int[] getBeamColors() {
+        if (!hasMirror()) return new int[]{0xFFFFFFAA};
+        return ((MirrorItem) mirrorStack.getItem()).getBeamColors();
+    }
+
+    @Override
+    public void updateRayOutput(Direction outDir, int beamLen, int pointerLen) {
+        int newOrdinal = outDir == null ? -1 : outDir.ordinal();
+        if (newOrdinal == outDirectionOrdinal && beamLen == outBeamLength && pointerLen == outPointerLength) return;
+        outDirectionOrdinal = newOrdinal;
+        outBeamLength = beamLen;
+        outPointerLength = pointerLen;
+        if (level != null) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+        }
+        setChanged();
+    }
+
+    @Override
+    public void clearRayOutput() {
+        updateRayOutput(null, 0, 0);
+    }
+
+    // -------------------------------------------------------------------------
+    // Renderer helpers
+    // -------------------------------------------------------------------------
+
+    @Nullable
+    public Direction getOutDirection() {
+        return outDirectionOrdinal < 0 ? null : Direction.values()[outDirectionOrdinal];
+    }
+
+    public int getOutBeamLength() { return outBeamLength; }
+
+    public int getOutPointerLength() { return outPointerLength; }
+
+    public boolean hasActiveRayOutput() {
+        return outDirectionOrdinal >= 0 && (outBeamLength > 0 || outPointerLength > 0);
+    }
+
+    // -------------------------------------------------------------------------
+    // LDLib2 sync
+    // -------------------------------------------------------------------------
 
     @Override
     public IManagedStorage getSyncStorage() {

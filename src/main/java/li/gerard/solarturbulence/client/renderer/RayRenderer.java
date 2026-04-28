@@ -18,10 +18,11 @@ public final class RayRenderer {
     private static final float PULSE_MIN_ALPHA = 0.5f;
     private static final float PULSE_MAX_ALPHA = 1.0f;
 
-    private static final int COLOR_START   = 0xFFFFFFAA;
-    private static final int COLOR_MID     = 0xFFFFCC44;
-    private static final int COLOR_END     = 0xFFFF6600;
-    private static final int COLOR_POINTER = 0xFFFF1100;
+    // Default emitter colors (warm yellow → orange → red)
+    private static final int DEFAULT_COLOR_START   = 0xFFFFFFAA;
+    private static final int DEFAULT_COLOR_MID     = 0xFFFFCC44;
+    private static final int DEFAULT_COLOR_END     = 0xFFFF6600;
+    private static final int COLOR_POINTER         = 0xFFFF1100;
 
     private RayRenderer() {}
 
@@ -29,18 +30,33 @@ public final class RayRenderer {
         return be.getBeamLength() > 0 || be.getPointerLength() > 0;
     }
 
+    /** Renders the primary segment of a RayEmittingBlockEntity using default emitter colors. */
     public static void render(RayEmittingBlockEntity be, float partialTick, PoseStack poseStack) {
         int beamLength    = be.getBeamLength();
         int pointerLength = be.getPointerLength();
         if (beamLength <= 0 && pointerLength <= 0) return;
 
-        Direction facing = be.getEmitDirection();
-        Vector3f dir = new Vector3f(facing.getStepX(), facing.getStepY(), facing.getStepZ());
+        long gameTime = be.getLevel() != null ? be.getLevel().getGameTime() : 0;
+        int[] colors = new int[]{DEFAULT_COLOR_START, DEFAULT_COLOR_MID, DEFAULT_COLOR_END};
+        renderSegment(be.getEmitDirection(), beamLength, pointerLength, partialTick, gameTime, poseStack, colors);
+    }
+
+    /**
+     * Renders a single ray segment with explicit parameters.
+     * Used by mirror frame renderers to draw reflected/outgoing segments in mirror-specific colors.
+     *
+     * @param colors 1–3 ARGB ints: [start], [start, end], or [start, mid, end]
+     */
+    public static void renderSegment(Direction direction, int beamLength, int pointerLength,
+                                      float partialTick, long gameTime,
+                                      PoseStack poseStack, int[] colors) {
+        if (beamLength <= 0 && pointerLength <= 0) return;
+
+        Vector3f dir = new Vector3f(direction.getStepX(), direction.getStepY(), direction.getStepZ());
 
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
 
-        long gameTime = be.getLevel() != null ? be.getLevel().getGameTime() : 0;
         float pulse = (float) (Math.sin((gameTime + partialTick) * PULSE_SPEED * Math.PI) * 0.5 + 0.5);
         float pulseAlpha = PULSE_MIN_ALPHA + (PULSE_MAX_ALPHA - PULSE_MIN_ALPHA) * pulse;
 
@@ -52,6 +68,7 @@ public final class RayRenderer {
         RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE);
         RenderSystem.enableDepthTest();
         RenderSystem.disableCull();
+        RenderSystem.depthMask(false);
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
         Matrix4f pose = poseStack.last().pose();
@@ -59,10 +76,17 @@ public final class RayRenderer {
         BufferBuilder buffer = tess.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
         if (beamLength > 0) {
-            emitCylinder(buffer, pose, dir, beamLength, right, localUp, BEAM_RADIUS, COLOR_START, COLOR_END, pulseAlpha);
-            emitMidSegment(buffer, pose, dir, beamLength, right, localUp, COLOR_MID, pulseAlpha);
+            int colorStart = colors[0];
+            int colorEnd   = colors[colors.length - 1];
+            emitCylinder(buffer, pose, dir, beamLength, right, localUp, BEAM_RADIUS,
+                    colorStart, colorEnd, pulseAlpha);
+            if (colors.length == 3) {
+                emitMidSegment(buffer, pose, dir, beamLength, right, localUp, colors[1], pulseAlpha);
+            }
         } else {
-            emitCylinder(buffer, pose, dir, pointerLength, right, localUp, POINTER_RADIUS, COLOR_POINTER, COLOR_POINTER, pulseAlpha);
+            int pointerColor = colors[colors.length - 1];
+            emitCylinder(buffer, pose, dir, pointerLength, right, localUp, POINTER_RADIUS,
+                    COLOR_POINTER, COLOR_POINTER, pulseAlpha * 0.6f);
         }
 
         MeshData mesh = buffer.build();
@@ -75,6 +99,10 @@ public final class RayRenderer {
 
         poseStack.popPose();
     }
+
+    // -------------------------------------------------------------------------
+    // Geometry helpers
+    // -------------------------------------------------------------------------
 
     private static void emitCylinder(BufferBuilder buffer, Matrix4f pose, Vector3f dir, float length,
                                      Vector3f right, Vector3f localUp, float radius,
@@ -110,10 +138,14 @@ public final class RayRenderer {
             float c0x = (float) Math.cos(a0), c0y = (float) Math.sin(a0);
             float c1x = (float) Math.cos(a1), c1y = (float) Math.sin(a1);
 
-            Vector3f r0a = ringPoint(right, localUp, c0x, c0y, midRadius).add(dir.x * segStart, dir.y * segStart, dir.z * segStart);
-            Vector3f r1a = ringPoint(right, localUp, c1x, c1y, midRadius).add(dir.x * segStart, dir.y * segStart, dir.z * segStart);
-            Vector3f r0b = ringPoint(right, localUp, c0x, c0y, midRadius).add(dir.x * segEnd,   dir.y * segEnd,   dir.z * segEnd);
-            Vector3f r1b = ringPoint(right, localUp, c1x, c1y, midRadius).add(dir.x * segEnd,   dir.y * segEnd,   dir.z * segEnd);
+            Vector3f r0a = ringPoint(right, localUp, c0x, c0y, midRadius)
+                    .add(dir.x * segStart, dir.y * segStart, dir.z * segStart);
+            Vector3f r1a = ringPoint(right, localUp, c1x, c1y, midRadius)
+                    .add(dir.x * segStart, dir.y * segStart, dir.z * segStart);
+            Vector3f r0b = ringPoint(right, localUp, c0x, c0y, midRadius)
+                    .add(dir.x * segEnd,   dir.y * segEnd,   dir.z * segEnd);
+            Vector3f r1b = ringPoint(right, localUp, c1x, c1y, midRadius)
+                    .add(dir.x * segEnd,   dir.y * segEnd,   dir.z * segEnd);
 
             addVertex(buffer, pose, r0a, faded,    pulseAlpha);
             addVertex(buffer, pose, r1a, faded,    pulseAlpha);
@@ -136,6 +168,4 @@ public final class RayRenderer {
         int b =  argb        & 0xFF;
         buffer.addVertex(pose, v.x, v.y, v.z).setColor(r, g, b, a);
     }
-
-
 }

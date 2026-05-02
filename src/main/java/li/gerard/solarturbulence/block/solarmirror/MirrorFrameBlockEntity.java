@@ -43,6 +43,8 @@ public class MirrorFrameBlockEntity extends BlockEntity implements GeoBlockEntit
     @DescSynced
     private int outPointerLength = 0;
 
+    private float outPower = 0f;
+
     public MirrorFrameBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModBlockEntities.MIRROR_FRAME_BLOCK_ENTITY.get(), pos, blockState);
     }
@@ -131,12 +133,13 @@ public class MirrorFrameBlockEntity extends BlockEntity implements GeoBlockEntit
     }
 
     @Override
-    public void updateRayOutput(Direction outDir, int beamLen, int pointerLen) {
+    public void updateRayOutput(Direction outDir, int beamLen, int pointerLen, float power) {
         int newOrdinal = outDir == null ? -1 : outDir.ordinal();
-        if (newOrdinal == outDirectionOrdinal && beamLen == outBeamLength && pointerLen == outPointerLength) return;
+        if (newOrdinal == outDirectionOrdinal && beamLen == outBeamLength && pointerLen == outPointerLength && power == outPower) return;
         outDirectionOrdinal = newOrdinal;
         outBeamLength = beamLen;
         outPointerLength = pointerLen;
+        outPower = power;
         if (level != null) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
         }
@@ -145,7 +148,7 @@ public class MirrorFrameBlockEntity extends BlockEntity implements GeoBlockEntit
 
     @Override
     public void clearRayOutput() {
-        updateRayOutput(null, 0, 0);
+        updateRayOutput(null, 0, 0, 0f);
     }
 
     // -------------------------------------------------------------------------

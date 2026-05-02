@@ -11,5 +11,6 @@
   "examplemod.configuration.magicNumberIntroduction": "Magic Number Text",
   "examplemod.configuration.magicNumber": "Magic Number",
 
-  "block.solar_turbulence.heat_beam_emitter": "Heat Beam Emitter"
+  "block.solar_turbulence.heat_beam_emitter": "Heat Beam Emitter",
+  "block.solar_turbulence.ray_splitter": "Ray Splitter"
 }

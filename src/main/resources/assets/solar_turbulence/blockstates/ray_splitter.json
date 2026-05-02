@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=north,split_axis=left_right": { "model": "solar_turbulence:block/ray_splitter" },
+    "facing=south,split_axis=left_right": { "model": "solar_turbulence:block/ray_splitter", "y": 180 },
+    "facing=west,split_axis=left_right":  { "model": "solar_turbulence:block/ray_splitter", "y": 270 },
+    "facing=east,split_axis=left_right":  { "model": "solar_turbulence:block/ray_splitter", "y": 90 },
+    "facing=up,split_axis=left_right":    { "model": "solar_turbulence:block/ray_splitter", "x": 270 },
+    "facing=down,split_axis=left_right":  { "model": "solar_turbulence:block/ray_splitter", "x": 90 },
+    "facing=north,split_axis=up_down": { "model": "solar_turbulence:block/ray_splitter_ud" },
+    "facing=south,split_axis=up_down": { "model": "solar_turbulence:block/ray_splitter_ud", "y": 180 },
+    "facing=west,split_axis=up_down":  { "model": "solar_turbulence:block/ray_splitter_ud", "y": 270 },
+    "facing=east,split_axis=up_down":  { "model": "solar_turbulence:block/ray_splitter_ud", "y": 90 },
+    "facing=up,split_axis=up_down":    { "model": "solar_turbulence:block/ray_splitter_ud", "x": 270 },
+    "facing=down,split_axis=up_down":  { "model": "solar_turbulence:block/ray_splitter_ud", "x": 90 }
+  }
+}

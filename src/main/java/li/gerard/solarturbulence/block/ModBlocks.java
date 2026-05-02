@@ -3,6 +3,7 @@ package li.gerard.solarturbulence.block;
 import li.gerard.solarturbulence.SolarTurbulenceMod;
 import li.gerard.solarturbulence.block.heatbeam.HeatBeamEmitterBlock;
 import li.gerard.solarturbulence.block.generic.MetallicFrameBlock;
+import li.gerard.solarturbulence.block.raysplitter.RaySplitterBlock;
 import li.gerard.solarturbulence.block.solarabsorber.SolarAbsorberBlock;
 import li.gerard.solarturbulence.block.solarmirror.MirrorFrameBlock;
 import li.gerard.solarturbulence.block.solarreceiver.SolarReceiverBlock;
@@ -42,4 +43,8 @@ public class ModBlocks {
     public static final DeferredHolder<Block, Block> HEAT_BEAM_EMITTER_BLOCK = BLOCKS.register(
             "heat_beam_emitter",
             () -> new HeatBeamEmitterBlock(BlockBehaviour.Properties.of().noOcclusion()));
+
+    public static final DeferredHolder<Block, Block> RAY_SPLITTER_BLOCK = BLOCKS.register(
+            "ray_splitter",
+            () -> new RaySplitterBlock(BlockBehaviour.Properties.of().noOcclusion()));
 }

@@ -21,6 +21,7 @@ public class ModItems {
     public static final DeferredItem<BlockItem> MIRROR_FRAME = ITEMS.registerSimpleBlockItem("mirror_frame", ModBlocks.MIRROR_FRAME_BLOCK);
     public static final DeferredItem<BlockItem> SOLAR_RECEIVER = ITEMS.registerSimpleBlockItem("solar_receiver", ModBlocks.SOLAR_RECEIVER_BLOCK);
     public static final DeferredItem<BlockItem> HEAT_BEAM_EMITTER = ITEMS.registerSimpleBlockItem("heat_beam_emitter", ModBlocks.HEAT_BEAM_EMITTER_BLOCK);
+    public static final DeferredItem<BlockItem> RAY_SPLITTER = ITEMS.registerSimpleBlockItem("ray_splitter", ModBlocks.RAY_SPLITTER_BLOCK);
     public static final DeferredItem<Item> WAND = ITEMS.registerSimpleItem("wand");
 
     public static final DeferredItem<Item> MIRROR_LINKER = ITEMS.register("mirror_linker.json",

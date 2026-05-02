@@ -15,7 +15,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public abstract class RayEmittingBlockEntity extends BlockEntity implements ISyncPersistRPCBlockEntity {
@@ -110,83 +112,83 @@ public abstract class RayEmittingBlockEntity extends BlockEntity implements ISyn
         if (level.isClientSide) return;
         be.preTick(level, pos, state);
 
-        // Clear reflectors activated in the previous tick
-        for (BlockPos rp : be.activatedReflectors) {
-            BlockEntity rbe = level.getBlockEntity(rp);
-            if (rbe instanceof IRayReflector r) r.clearRayOutput();
-        }
+        // Snapshot previous reflectors so we can clear any that fall out of the chain this tick.
+        Set<BlockPos> prevReflectors = be.activatedReflectors.isEmpty()
+                ? Collections.emptySet()
+                : new HashSet<>(be.activatedReflectors);
         be.activatedReflectors.clear();
 
-        int[] seg = new int[2]; // [0]=beamLength, [1]=pointerLength
-        traceRay(level, be, pos, be.getEmitDirection(), be.getMaxBounces(), be.getEmissionMultiplier(), seg);
+        RaySegment seg = traceRay(level, be, pos, be.getEmitDirection(), be.getMaxBounces(), be.getEmissionMultiplier());
 
-        if (seg[0] != be.beamLength || seg[1] != be.pointerLength) {
-            be.beamLength = seg[0];
-            be.pointerLength = seg[1];
+        // Only clear reflectors that are no longer in the chain — avoids a clear+restore every tick.
+        for (BlockPos rp : prevReflectors) {
+            if (!be.activatedReflectors.contains(rp)) {
+                BlockEntity rbe = level.getBlockEntity(rp);
+                if (rbe instanceof IRayReflector r) r.clearRayOutput();
+            }
+        }
+
+        if (seg.beamLength() != be.beamLength || seg.pointerLength() != be.pointerLength) {
+            be.beamLength = seg.beamLength();
+            be.pointerLength = seg.pointerLength();
             level.sendBlockUpdated(pos, state, state, 3);
             be.setChanged();
         }
     }
 
+    // -------------------------------------------------------------------------
+    // Ray tracing
+    // -------------------------------------------------------------------------
+
+    private record RaySegment(int beamLength, int pointerLength, float power) {}
+
     /**
      * Traces one ray segment from {@code origin} in {@code direction}, following reflectors.
-     * Fills {@code seg[0]} with beam length and {@code seg[1]} with pointer length for THIS segment.
-     * Returns whether a heat target was reached anywhere in the chain from this segment onward.
+     * Returns a {@link RaySegment} with beam/pointer lengths for THIS segment and the power at the hit point.
      */
-    private static boolean traceRay(Level level, RayEmittingBlockEntity rootBe,
-                                     BlockPos origin, Direction direction,
-                                     int remainingBounces, float heatMultiplier, int[] seg) {
+    private static RaySegment traceRay(Level level, RayEmittingBlockEntity rootBe,
+                                        BlockPos origin, Direction direction,
+                                        int remainingBounces, float heatMultiplier) {
         int range = rootBe.getMaxRange();
 
         for (int dist = 1; dist <= range; dist++) {
             BlockPos scanPos = origin.relative(direction, dist);
             BlockState scanState = level.getBlockState(scanPos);
 
-            // Check for a reflector before other target/solid checks
+            // Check for a reflector before other target/solid checks.
             if (remainingBounces > 0) {
                 BlockEntity candidate = level.getBlockEntity(scanPos);
                 if (candidate instanceof IRayReflector reflector && reflector.canReflect()) {
                     rootBe.activatedReflectors.add(scanPos);
 
-                    Direction outDir = reflector.reflect(direction);
-                    float outMultiplier = heatMultiplier * reflector.getHeatMultiplier();
-                    int[] reflectedSeg = new int[2];
-                    boolean chainHit = traceRay(level, rootBe, scanPos, outDir,
-                            remainingBounces - 1, outMultiplier, reflectedSeg);
-
-                    reflector.updateRayOutput(outDir, reflectedSeg[0], reflectedSeg[1]);
-
-                    if (chainHit) {
-                        seg[0] = dist;
-                        seg[1] = 0;
-                    } else {
-                        seg[0] = 0;
-                        seg[1] = dist;
+                    List<IRayReflector.RayOutput> outputs = reflector.getOutputs(direction);
+                    boolean anyChainHit = false;
+                    for (IRayReflector.RayOutput out : outputs) {
+                        float outMultiplier = heatMultiplier * out.powerFactor();
+                        RaySegment sub = traceRay(level, rootBe, scanPos, out.dir(),
+                                remainingBounces - 1, outMultiplier);
+                        reflector.updateRayOutput(out.dir(), sub.beamLength(), sub.pointerLength(), sub.power());
+                        if (sub.beamLength() > 0) anyChainHit = true;
                     }
-                    return chainHit;
+                    return anyChainHit
+                            ? new RaySegment(dist, 0, heatMultiplier)
+                            : new RaySegment(0, dist, 0f);
                 }
             }
 
-            // Heat target
+            // Heat target.
             if (rootBe.isValidTarget(level, scanPos, direction)) {
                 boolean hit = rootBe.onHitTarget(level, scanPos, direction, heatMultiplier);
-                seg[0] = hit ? dist : 0;
-                seg[1] = hit ? 0 : dist;
-                return hit;
+                return hit ? new RaySegment(dist, 0, heatMultiplier) : new RaySegment(0, dist, 0f);
             }
 
-            // Solid non-target — stop here
+            // Solid non-target — stop here.
             if (!scanState.isAir()) {
-                seg[0] = 0;
-                seg[1] = dist;
-                return false;
+                return new RaySegment(0, dist, 0f);
             }
         }
 
-        // Exhausted range
-        seg[0] = 0;
-        seg[1] = range;
-        return false;
+        return new RaySegment(0, range, 0f);
     }
 
     // -------------------------------------------------------------------------

@@ -4,6 +4,7 @@ import li.gerard.solarturbulence.block.ModBlockEntities;
 import li.gerard.solarturbulence.block.generic.MultiblockControllerBlockEntity;
 import li.gerard.solarturbulence.client.renderer.HeatBeamEmitterBlockEntityRenderer;
 import li.gerard.solarturbulence.client.renderer.MirrorFrameBlockEntityRenderer;
+import li.gerard.solarturbulence.client.renderer.RaySplitterBlockEntityRenderer;
 import li.gerard.solarturbulence.client.renderer.SolarAbsorberBlockEntityRenderer;
 import li.gerard.solarturbulence.client.renderer.SolarReceiverBlockEntityRenderer;
 import net.minecraft.client.Minecraft;
@@ -48,6 +49,7 @@ public class SolarTurbulenceModClient {
         event.registerBlockEntityRenderer(ModBlockEntities.MIRROR_FRAME_BLOCK_ENTITY.get(), MirrorFrameBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_RECEIVER_BLOCK_ENTITY.get(), SolarReceiverBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.HEAT_BEAM_EMITTER_BLOCK_ENTITY.get(), HeatBeamEmitterBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.RAY_SPLITTER_BLOCK_ENTITY.get(), RaySplitterBlockEntityRenderer::new);
     }
 
     @SubscribeEvent

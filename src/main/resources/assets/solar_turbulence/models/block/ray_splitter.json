@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "top":   "solar_turbulence:block/laser_side",
+    "front": "solar_turbulence:block/laser_face",
+    "side":  "solar_turbulence:block/laser_side"
+  }
+}

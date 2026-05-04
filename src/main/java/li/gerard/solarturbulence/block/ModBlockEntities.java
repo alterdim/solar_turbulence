@@ -1,6 +1,7 @@
 package li.gerard.solarturbulence.block;
 
 import li.gerard.solarturbulence.SolarTurbulenceMod;
+import li.gerard.solarturbulence.block.blazethermalstorage.BlazeThermalStorageBlockEntity;
 import li.gerard.solarturbulence.block.heatbeam.HeatBeamEmitterBlockEntity;
 import li.gerard.solarturbulence.block.raysplitter.RaySplitterBlockEntity;
 import li.gerard.solarturbulence.block.solarabsorber.SolarAbsorberBlockEntity;
@@ -60,6 +61,15 @@ public class ModBlockEntities {
             () -> BlockEntityType.Builder.of(
                             RaySplitterBlockEntity::new,
                             ModBlocks.RAY_SPLITTER_BLOCK.get()
+                    )
+                    .build(null)
+    );
+
+    public static final Supplier<BlockEntityType<BlazeThermalStorageBlockEntity>> BLAZE_THERMAL_STORAGE_BLOCK_ENTITY = BLOCK_ENTITIES.register(
+            "blaze_thermal_storage_block_entity",
+            () -> BlockEntityType.Builder.of(
+                            BlazeThermalStorageBlockEntity::new,
+                            ModBlocks.BLAZE_THERMAL_STORAGE_BLOCK.get()
                     )
                     .build(null)
     );

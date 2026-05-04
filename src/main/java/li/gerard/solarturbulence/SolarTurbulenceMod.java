@@ -60,6 +60,8 @@ public class SolarTurbulenceMod {
                 output.accept(HEAT_BEAM_EMITTER.get());
                 output.accept(RAY_SPLITTER.get());
                 output.accept(WAND.get());
+                output.accept(BLAZE_HEAT_RODS.get());
+                output.accept(BLAZE_THERMAL_STORAGE.get());
             }).build());
 
 

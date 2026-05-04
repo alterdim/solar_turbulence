@@ -1,6 +1,7 @@
 package li.gerard.solarturbulence.block;
 
 import li.gerard.solarturbulence.SolarTurbulenceMod;
+import li.gerard.solarturbulence.block.blazethermalstorage.BlazeThermalStorageBlock;
 import li.gerard.solarturbulence.block.heatbeam.HeatBeamEmitterBlock;
 import li.gerard.solarturbulence.block.generic.MetallicFrameBlock;
 import li.gerard.solarturbulence.block.raysplitter.RaySplitterBlock;
@@ -47,4 +48,8 @@ public class ModBlocks {
     public static final DeferredHolder<Block, Block> RAY_SPLITTER_BLOCK = BLOCKS.register(
             "ray_splitter",
             () -> new RaySplitterBlock(BlockBehaviour.Properties.of().noOcclusion()));
+
+    public static final DeferredHolder<Block, Block> BLAZE_THERMAL_STORAGE_BLOCK = BLOCKS.register(
+            "blaze_thermal_storage_block",
+            () -> new BlazeThermalStorageBlock(BlockBehaviour.Properties.of().noOcclusion()));
 }

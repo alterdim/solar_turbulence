@@ -2,11 +2,7 @@ package li.gerard.solarturbulence;
 
 import li.gerard.solarturbulence.block.ModBlockEntities;
 import li.gerard.solarturbulence.block.generic.MultiblockControllerBlockEntity;
-import li.gerard.solarturbulence.client.renderer.HeatBeamEmitterBlockEntityRenderer;
-import li.gerard.solarturbulence.client.renderer.MirrorFrameBlockEntityRenderer;
-import li.gerard.solarturbulence.client.renderer.RaySplitterBlockEntityRenderer;
-import li.gerard.solarturbulence.client.renderer.SolarAbsorberBlockEntityRenderer;
-import li.gerard.solarturbulence.client.renderer.SolarReceiverBlockEntityRenderer;
+import li.gerard.solarturbulence.client.renderer.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
@@ -50,6 +46,8 @@ public class SolarTurbulenceModClient {
         event.registerBlockEntityRenderer(ModBlockEntities.SOLAR_RECEIVER_BLOCK_ENTITY.get(), SolarReceiverBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.HEAT_BEAM_EMITTER_BLOCK_ENTITY.get(), HeatBeamEmitterBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.RAY_SPLITTER_BLOCK_ENTITY.get(), RaySplitterBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.BLAZE_THERMAL_STORAGE_BLOCK_ENTITY.get(), BlazeThermalStorageRenderer::new);
+
     }
 
     @SubscribeEvent

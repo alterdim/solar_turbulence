@@ -1,9 +1,8 @@
-package li.gerard.solarturbulence.client.renderer;
+package li.gerard.solarturbulence.client.renderer.block;
 
 import li.gerard.solarturbulence.block.blazethermalstorage.BlazeThermalStorageBlockEntity;
-import li.gerard.solarturbulence.client.model.BlazeThermalStorageModel;
+import li.gerard.solarturbulence.client.model.block.BlazeThermalStorageModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import software.bernie.geckolib.renderer.GeoBlockRenderer;
 
 public class BlazeThermalStorageRenderer extends GeoBlockRenderer<BlazeThermalStorageBlockEntity> {

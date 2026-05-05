@@ -1,8 +1,8 @@
-package li.gerard.solarturbulence.client.renderer;
+package li.gerard.solarturbulence.client.renderer.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import li.gerard.solarturbulence.block.solarreceiver.SolarReceiverBlockEntity;
-import li.gerard.solarturbulence.client.model.SolarReceiverModel;
+import li.gerard.solarturbulence.client.model.block.SolarReceiverModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.phys.AABB;

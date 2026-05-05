@@ -2,7 +2,7 @@ package li.gerard.solarturbulence;
 
 import li.gerard.solarturbulence.block.ModBlockEntities;
 import li.gerard.solarturbulence.block.generic.MultiblockControllerBlockEntity;
-import li.gerard.solarturbulence.client.renderer.*;
+import li.gerard.solarturbulence.client.renderer.block.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;

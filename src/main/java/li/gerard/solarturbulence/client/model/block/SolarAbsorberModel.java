@@ -1,10 +1,8 @@
-package li.gerard.solarturbulence.client.model;
+package li.gerard.solarturbulence.client.model.block;
 
 import li.gerard.solarturbulence.SolarTurbulenceMod;
 import li.gerard.solarturbulence.block.solarabsorber.SolarAbsorberBlockEntity;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.GeckoLib;
-import software.bernie.geckolib.animatable.GeoAnimatable;
 import software.bernie.geckolib.model.GeoModel;
 
 public class SolarAbsorberModel extends GeoModel<SolarAbsorberBlockEntity> {

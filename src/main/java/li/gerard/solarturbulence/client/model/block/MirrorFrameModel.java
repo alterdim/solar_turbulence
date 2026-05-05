@@ -1,7 +1,6 @@
-package li.gerard.solarturbulence.client.model;
+package li.gerard.solarturbulence.client.model.block;
 
 import li.gerard.solarturbulence.SolarTurbulenceMod;
-import li.gerard.solarturbulence.block.solarabsorber.SolarAbsorberBlockEntity;
 import li.gerard.solarturbulence.block.solarmirror.MirrorFrameBlockEntity;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib.model.GeoModel;

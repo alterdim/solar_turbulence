@@ -12,5 +12,7 @@
   "examplemod.configuration.magicNumber": "Magic Number",
 
   "block.solar_turbulence.heat_beam_emitter": "Heat Beam Emitter",
-  "block.solar_turbulence.ray_splitter": "Ray Splitter"
+  "block.solar_turbulence.ray_splitter": "Ray Splitter",
+
+  "tooltip.solar_turbulence.heat": "Heat: %s / %s"
 }

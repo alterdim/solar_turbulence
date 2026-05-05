@@ -1,4 +1,4 @@
-package li.gerard.solarturbulence.client.renderer;
+package li.gerard.solarturbulence.client.renderer.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import li.gerard.solarturbulence.block.heatbeam.HeatBeamEmitterBlockEntity;

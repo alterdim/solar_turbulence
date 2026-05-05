@@ -45,5 +45,5 @@ public class ModItems {
             });
 
     public static final DeferredItem<Item> BLAZE_HEAT_RODS = ITEMS.register("blaze_heat_rods",
-            () -> new HeatRodItem(new Item.Properties(), 10000));
+            () -> new HeatRodItem(new Item.Properties(), 10000, 100, 100));
 }

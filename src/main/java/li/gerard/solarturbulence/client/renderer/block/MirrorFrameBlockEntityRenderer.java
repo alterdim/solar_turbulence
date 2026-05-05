@@ -1,9 +1,9 @@
-package li.gerard.solarturbulence.client.renderer;
+package li.gerard.solarturbulence.client.renderer.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import li.gerard.solarturbulence.block.solarmirror.MirrorFrameBlockEntity;
-import li.gerard.solarturbulence.client.model.MirrorFrameModel;
+import li.gerard.solarturbulence.client.model.block.MirrorFrameModel;
 import li.gerard.solarturbulence.item.mirror.MirrorItem;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;

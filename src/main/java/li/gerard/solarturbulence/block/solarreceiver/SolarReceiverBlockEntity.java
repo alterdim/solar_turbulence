@@ -1,6 +1,7 @@
 package li.gerard.solarturbulence.block.solarreceiver;
 
 import com.lowdragmc.lowdraglib2.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib2.syncdata.holder.blockentity.ISyncPersistRPCBlockEntity;
 import li.gerard.solarturbulence.block.ModBlockEntities;
 import li.gerard.solarturbulence.capability.fluid.MonoFluidTank;
 import li.gerard.solarturbulence.capability.heat.HeatStorage;

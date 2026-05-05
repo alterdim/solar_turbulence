@@ -1,4 +1,4 @@
-package li.gerard.solarturbulence.client.renderer;
+package li.gerard.solarturbulence.client.renderer.block;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;

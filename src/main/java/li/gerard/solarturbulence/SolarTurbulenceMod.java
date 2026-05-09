@@ -71,7 +71,7 @@ public class SolarTurbulenceMod {
     // The constructor for the mod class is the first code that is run when your mod is loaded.
     // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
     public SolarTurbulenceMod(IEventBus modEventBus, ModContainer modContainer) {
-        // Register the commonSetup method for modloading
+
         modEventBus.addListener(this::commonSetup);
 
         ModDataComponents.COMPONENTS.register(modEventBus);
@@ -82,6 +82,7 @@ public class SolarTurbulenceMod {
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
         modEventBus.register(ModCapabilities.class);
+        modEventBus.addListener(ModFluids::clientExt);
 
 
 

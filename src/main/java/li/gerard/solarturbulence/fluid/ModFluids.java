@@ -4,13 +4,17 @@ import li.gerard.solarturbulence.SolarTurbulenceMod;
 import li.gerard.solarturbulence.block.ModBlocks;
 import li.gerard.solarturbulence.item.ModItems;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -60,11 +64,7 @@ public class ModFluids {
     public static final DeferredHolder<Block, LiquidBlock> LIQUID_DARGLASS_BLOCK =
             ModBlocks.BLOCKS.register("liquid_darglass", () ->
                     new LiquidBlock(ModFluids.LIQUID_DARGLASS_SOURCE.get(),
-                            BlockBehaviour.Properties.of()
-                                    .noCollission()
-                                    .strength(100f)
-                                    .noLootTable()
-                                    .lightLevel(state -> 15)
+                            BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)
                     )
             );
 
@@ -91,6 +91,22 @@ public class ModFluids {
                 .levelDecreasePerBlock(2)
                 .block(ModFluids.LIQUID_DARGLASS_BLOCK)
                 .bucket(ModFluids.LIQUID_DARGLASS_BUCKET);
+    }
+
+    private static final IClientFluidTypeExtensions liquidExt = new IClientFluidTypeExtensions() {
+        @Override
+        public ResourceLocation getStillTexture() {
+            return ResourceLocation.fromNamespaceAndPath(MODID, "block/liquid_darglass");
+        }
+
+        @Override
+        public ResourceLocation getFlowingTexture() {
+            return ResourceLocation.fromNamespaceAndPath(MODID, "block/liquid_darglass_flow");
+        }
+    };
+
+    public static void clientExt(RegisterClientExtensionsEvent event) {
+        event.registerFluidType(liquidExt, LIQUID_DARGLASS_TYPE.get());
     }
 
 }

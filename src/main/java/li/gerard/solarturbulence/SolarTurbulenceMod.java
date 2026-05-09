@@ -5,6 +5,7 @@ import com.lowdragmc.lowdraglib2.gui.factory.PlayerUIMenuType;
 import li.gerard.solarturbulence.block.ModBlockEntities;
 import li.gerard.solarturbulence.block.ModBlocks;
 import li.gerard.solarturbulence.data.ModDataComponents;
+import li.gerard.solarturbulence.fluid.ModFluids;
 import li.gerard.solarturbulence.item.ModItems;
 import li.gerard.solarturbulence.capability.ModCapabilities;
 import net.minecraft.resources.ResourceLocation;
@@ -30,6 +31,7 @@ import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import static li.gerard.solarturbulence.fluid.ModFluids.LIQUID_DARGLASS_BUCKET;
 import static li.gerard.solarturbulence.item.ModItems.*;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
@@ -62,6 +64,7 @@ public class SolarTurbulenceMod {
                 output.accept(WAND.get());
                 output.accept(BLAZE_HEAT_RODS.get());
                 output.accept(BLAZE_THERMAL_STORAGE.get());
+                output.accept(LIQUID_DARGLASS_BUCKET.get());
             }).build());
 
 
@@ -74,6 +77,8 @@ public class SolarTurbulenceMod {
         ModDataComponents.COMPONENTS.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
+        ModFluids.FLUIDS.register(modEventBus);
+        ModFluids.FLUID_TYPES.register(modEventBus);
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         CREATIVE_MODE_TABS.register(modEventBus);
         modEventBus.register(ModCapabilities.class);

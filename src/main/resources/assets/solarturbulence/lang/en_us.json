@@ -1,0 +1,13 @@
+{
+  "itemGroup.solarturbulence": "Example Mod Tab",
+  "block.solarturbulence.example_block": "Example Block",
+  "item.solarturbulence.example_item": "Example Item",
+
+  "solarturbulence.configuration.title": "Solar Turbulence Configs",
+  "solarturbulence.configuration.section.solarturbulence.common.toml": "Solar Turbulence Configs",
+  "solarturbulence.configuration.section.solarturbulence.common.toml.title": "Solar Turbulence Configs",
+  "solarturbulence.configuration.items": "Item List",
+  "solarturbulence.configuration.logDirtBlock": "Log Dirt Block",
+  "solarturbulence.configuration.magicNumberIntroduction": "Magic Number Text",
+  "solarturbulence.configuration.magicNumber": "Magic Number"
+}
